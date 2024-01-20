@@ -1,11 +1,10 @@
 import os
-from playsound import playsound
 import openai
+from dotenv import load_dotenv
 from pathlib import Path
-from pydub import AudioSegment
-from pydub.playback import play
+load_dotenv()
 
-openai.api_key = "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"
+openai.api_key = os.getenv("GPT_API_KEY")
 
 class Speaker:
     def __init__(self):
@@ -28,5 +27,5 @@ class Speaker:
 
 if __name__ == "__main__":
     speaker = Speaker()
-    speaker.generateAudio("i hate technical interviews")
+    speaker.generateAudio("hello cuties")
 
