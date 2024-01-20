@@ -1,4 +1,6 @@
+import os
 import openai
+
 openai.api_key = "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"
 
 class GPT:
@@ -16,11 +18,6 @@ class GPT:
         self.messages.append({"role": "assistant", "content": reply})
         return reply
 
-# if __name__ == "__main__":
-#     gpt = GPT("")
-#     while True:
-#         user_input = input("You: ")
-#         if user_input.lower() in ["quit", "exit", "bye"]:
-#             break
-#         response = gpt.chat(user_input)
-#         print("Chatbot: ", response)
+if __name__ == "__main__":
+    gpt = GPT("You are a technical interviewer for a software engineering role.")
+    print(gpt.chat("what are we doing"))
