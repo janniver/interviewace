@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import CodeEditorWindow from "./CodeEditorWindow";
 import axios from "axios";
 import { classnames } from "../utils/general";
@@ -9,6 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 import { defineTheme } from "../lib/defineTheme";
 import useKeyPress from "../hooks/useKeyPress";
+import Footer from "./Footer";
 import OutputWindow from "./OutputWindow";
 import CustomInput from "./CustomInput";
 import OutputDetails from "./OutputDetails";
@@ -61,11 +62,71 @@ const Landing = () => {
     setLanguage(sl);
   };
 
-  const handleCompile = () => {
+  const showSuccessToast = useCallback((msg) => {
+    toast.success(msg || `Compiled Successfully!`, {
+      position: "top-right",
+      autoClose: 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }, []); // No dependencies, so an empty array
+  
+  const showErrorToast = useCallback((msg, timer) => {
+    toast.error(msg || `Something went wrong! Please try again.`, {
+      position: "top-right",
+      autoClose: timer ? timer : 1000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+    });
+  }, []); // No dependencies, so an empty array
+  
+
+  const checkStatus = useCallback(async (token) => {
+    const options = {
+      method: 'GET',
+      url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
+      params: { base64_encoded: 'true', fields: '*' },
+      headers: {
+        'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
+        'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
+      },
+    };
+
+    try {
+      let response = await axios.request(options);
+      let statusId = response.data.status?.id;
+
+      if (statusId === 1 || statusId === 2) {
+        // still processing
+        setTimeout(() => {
+          checkStatus(token);
+        }, 2000);
+        return;
+      } else {
+        setProcessing(false);
+        setOutputDetails(response.data);
+        showSuccessToast(`Compiled Successfully!`);
+        console.log("response.data", response.data);
+        return;
+      }
+    } catch (err) {
+      console.log("Error in checkStatus: ", err);
+      setProcessing(false);
+      showErrorToast();
+    }
+  }, [setProcessing, setOutputDetails, showSuccessToast, showErrorToast]);
+
+  const handleCompile = useCallback(() => {
+    console.log("handleCompile called...");
     setProcessing(true);
     const formData = {
       language_id: language.id,
-      // encode source code in base64
       source_code: btoa(code),
       stdin: btoa(customInput),
     };
@@ -82,30 +143,22 @@ const Landing = () => {
       data: formData,
     };
 
-    axios
-      .request(options)
+    axios.request(options)
       .then(function (response) {
-        console.log("res.data", response.data);
         const token = response.data.token;
-        checkStatus(token);
+        checkStatus(token); // Ensure checkStatus is stable or included in dependencies
       })
       .catch((err) => {
         let error = err.response ? err.response.data : err;
-        // get error status
-        let status = err.response.status;
-        console.log("status", status);
+        let status = err.response ? err.response.status : null;
+        console.log("Error status", status);
         if (status === 429) {
-          console.log("too many requests", status);
-
-          showErrorToast(
-            `Quota of 100 requests exceeded for the Day!`,
-            10000
-          );
+          showErrorToast(`Quota of 100 requests exceeded for the Day!`, 10000);
         }
         setProcessing(false);
-        console.log("catch block...", error);
+        console.log("Error in handleCompile: ", error);
       });
-  };
+  }, [code, customInput, language, setProcessing, checkStatus, showErrorToast]);
 
   useEffect(() => {
     if (enterPress && ctrlPress) {
@@ -113,7 +166,7 @@ const Landing = () => {
       console.log("ctrlPress", ctrlPress);
       handleCompile();
     }
-  }, [ctrlPress, enterPress]);
+  }, [ctrlPress, enterPress, handleCompile]);
   const onChange = (action, data) => {
     switch (action) {
       case "code": {
@@ -123,41 +176,6 @@ const Landing = () => {
       default: {
         console.warn("case not handled!", action, data);
       }
-    }
-  };
-
-  const checkStatus = async (token) => {
-    const options = {
-      method: "GET",
-      url: process.env.REACT_APP_RAPID_API_URL + "/" + token,
-      params: { base64_encoded: "true", fields: "*" },
-      headers: {
-        "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
-        "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
-      },
-    };
-    try {
-      let response = await axios.request(options);
-      let statusId = response.data.status?.id;
-
-      // Processed - we have a result
-      if (statusId === 1 || statusId === 2) {
-        // still processing
-        setTimeout(() => {
-          checkStatus(token);
-        }, 2000);
-        return;
-      } else {
-        setProcessing(false);
-        setOutputDetails(response.data);
-        showSuccessToast(`Compiled Successfully!`);
-        console.log("response.data", response.data);
-        return;
-      }
-    } catch (err) {
-      console.log("err", err);
-      setProcessing(false);
-      showErrorToast();
     }
   };
 
@@ -177,29 +195,6 @@ const Landing = () => {
     );
   }, []);
 
-  const showSuccessToast = (msg) => {
-    toast.success(msg || `Compiled Successfully!`, {
-      position: "top-right",
-      autoClose: 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-  const showErrorToast = (msg, timer) => {
-    toast.error(msg || `Something went wrong! Please try again.`, {
-      position: "top-right",
-      autoClose: timer ? timer : 1000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: true,
-      draggable: true,
-      progress: undefined,
-    });
-  };
-
   return (
     <>
       <ToastContainer
@@ -213,8 +208,7 @@ const Landing = () => {
         draggable
         pauseOnHover
       />
-
-      <div className="h-4"></div>
+      <div className="h-4 w-full"></div>
       <div className="flex flex-row">
         <div className="px-4 py-2">
           <LanguagesDropdown onSelectChange={onSelectChange} />
