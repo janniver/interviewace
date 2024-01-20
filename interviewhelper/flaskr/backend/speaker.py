@@ -24,6 +24,7 @@ class Speaker:
         file = "../../../output_audio/output.mp3"
         print('playing sound using native player')
         os.system("afplay " + file)
+        return True
 
 if __name__ == "__main__":
     speaker = Speaker()
