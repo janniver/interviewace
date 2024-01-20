@@ -4,9 +4,11 @@
   "private": true,
   "dependencies": {
     "@codemirror/lang-java": "github:codemirror/lang-java",
+    "@monaco-editor/react": "^4.6.0",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "axios": "^1.6.5",
     "codemirror": "^5.65.16",
     "monaco-editor": "^0.45.0",
     "react": "^18.2.0",
