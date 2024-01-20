@@ -8,13 +8,14 @@ import whisper
 import torch
 
 from datetime import datetime, timedelta
+from gpt import GPT
 from queue import Queue
 from time import sleep
 from sys import platform
 
 class Transcriber:
     def __init__(self):
-        pass
+        self.gpt_model = GPT()
 
     def record(self):
         parser = argparse.ArgumentParser()
@@ -140,7 +141,7 @@ class Transcriber:
         print("\n\nTranscription:")
         for line in transcription:
             print(line)
-
+    
 
 if __name__ == "__main__":
     trans = Transcriber()
