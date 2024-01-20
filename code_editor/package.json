@@ -11,10 +11,13 @@
     "axios": "^1.6.5",
     "codemirror": "^5.65.16",
     "monaco-editor": "^0.45.0",
+    "monaco-themes": "^0.4.4",
     "react": "^18.2.0",
     "react-codemirror2": "^7.3.0",
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
+    "react-select": "^5.8.0",
+    "react-toastify": "^10.0.3",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

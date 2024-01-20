@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from "react";
 import CodeEditorWindow from "./CodeEditorWindow";
 import axios from "axios";
-import { classnames } from "../utils/general";
-import { languageOptions } from "../constants/languageOptions";
+import { classnames } from "./general";
+import { languageOptions } from "./LanguageOptions";
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-import { defineTheme } from "../lib/defineTheme";
-import useKeyPress from "../hooks/useKeyPress";
+import { defineTheme } from "./defineTheme";
+import useKeyPress from "./useKeyPress";
 import Footer from "./Footer";
 import OutputWindow from "./OutputWindow";
 import CustomInput from "./CustomInput";
 import OutputDetails from "./OutputDetails";
 import ThemeDropdown from "./ThemeDropdown";
-import LanguagesDropdown from "./LanguagesDropdown";
+import LanguagesDropdown from "./LanguageDropdown";
 
 const javascriptDefault = `/**
 * Problem: Binary Search: Search a sorted array for a target value.
