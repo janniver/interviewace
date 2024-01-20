@@ -1,6 +1,7 @@
 import os
 import openai
-openai.api_key = os.getenv("GPT_API_KEY")
+
+openai.api_key = "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"
 
 class GPT:
     def __init__(self, system_msg):
@@ -18,5 +19,5 @@ class GPT:
         return reply
 
 if __name__ == "__main__":
-    gpt = GPT("You are a technical interviewer for a software engineering role")
+    gpt = GPT("You are a technical interviewer for a software engineering role.")
     print(gpt.chat("what are we doing"))
