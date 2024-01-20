@@ -1,0 +1,5 @@
+.line-break {
+    display: block; /* This makes the span behave like a block element, allowing margins to be applied */
+    margin-top: 0.5em; /* This adds space above the span, effectively increasing the space after a line break */
+  }
+  
