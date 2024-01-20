@@ -202,12 +202,77 @@ const Landing = () => {
       });
   }, [code, customInput, language, setProcessing, checkStatus, showErrorToast]);
 
-  const handleStartEnd = () => {
+  const [response, setResponse] = useState('');
+
+  const sendPostRequest = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/start', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ question: leetcodeQuestion }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setResponse(JSON.stringify(data));
+      sendListenRequest();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const sendListenRequest = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/listen', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setResponse(JSON.stringify(data));
+      sendRespondRequest();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+  const sendRespondRequest = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/respond', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ code: code, description: response }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      setResponse(JSON.stringify(data));
+      sendListenRequest();
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+  const handleStartEnd = async () => {
     setRunning(!running);
     if (!running) startTimer();
     else clearTimer(getDeadTime());
-    // call start API with LC question in JSON (POST Request)
-    // if (!running) startSpeechRecognition();
+    sendPostRequest();
   };
 
   useEffect(() => {
