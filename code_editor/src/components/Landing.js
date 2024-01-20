@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import CodeEditorWindow from "./CodeEditorWindow";
 import axios from "axios";
 import { classnames } from "../utils/general";
@@ -8,14 +8,86 @@ import "react-toastify/dist/ReactToastify.css";
 import { defineTheme } from "../lib/defineTheme";
 import useKeyPress from "../hooks/useKeyPress";
 import OutputWindow from "./OutputWindow";
+import QuestionWindow from "./QuestionWindow";
 import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 import CustomWebcam from "./CustomWebcam";
-
 const javascriptDefault = `//Welcome to Code Editor!`;
+
+const leetcodeQuestion = `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\ 
+You may assume that each input would have exactly one solution, and you may not use the same element twice.
+You can return the answer in any order.`;
 
 const Landing = () => {
 
+  const Ref = useRef(null);
+  const [timer, setTimer] = useState("45:00");
+  const getTimeRemaining = (e) => {
+    const total =
+      Date.parse(e) - Date.parse(new Date());
+    const seconds = Math.floor((total / 1000) % 60);
+    const minutes = Math.floor(
+      (total / 1000 / 60) % 60
+    );
+    const hours = Math.floor(
+      (total / 1000 / 60 / 60) % 24
+    );
+    return {
+      total,
+      hours,
+      minutes,
+      seconds,
+    };
+  };
+  const startTimer = (e) => {
+    let { total, minutes, seconds } = getTimeRemaining(e);
+    if (total >= 0) {
+      // Update the timer
+      setTimer(
+        (minutes > 9 ? minutes : "0" + minutes) +
+        ":" +
+        (seconds > 9 ? seconds : "0" + seconds)
+      );
+    }
+  };
+
+
+  const clearTimer = (e) => {
+    // Set the timer to 45 minutes in the format MM:SS
+    setTimer("45:00");
+
+    if (Ref.current) clearInterval(Ref.current);
+    const id = setInterval(() => {
+      startTimer(e);
+    }, 1000);
+    Ref.current = id;
+  };
+
+
+  const getDeadTime = () => {
+    let deadline = new Date();
+    // Set deadline to 45 minutes from now
+    deadline.setMinutes(deadline.getMinutes() + 45);
+    return deadline;
+  };
+
+
+  // We can use useEffect so that when the component
+  // mount the timer will start as soon as possible
+
+  // We put empty array to act as componentDid
+  // mount only
+  useEffect(() => {
+    clearTimer(getDeadTime());
+  }, []);
+
+  // Another way to call the clearTimer() to start
+  // the countdown is via action event from the
+  // button first we create function to be called
+  // by the button
+  const onClickReset = () => {
+    clearTimer(getDeadTime());
+  };
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
@@ -69,11 +141,11 @@ const Landing = () => {
         'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
       },
     };
-  
+
     try {
       let response = await axios.request(options);
       let statusId = response.data.status?.id;
-  
+
       // Check if the response has a status indicating success
       if (statusId === 3) { // Replace '3' with the actual success status ID
         setProcessing(false);
@@ -82,6 +154,7 @@ const Landing = () => {
       } else {
         // If status is not 'success', show an error toast
         setProcessing(false);
+        setOutputDetails(response.data.error);
         showErrorToast(response.data.error || `Compilation failed!`);
       }
     } catch (err) {
@@ -89,7 +162,7 @@ const Landing = () => {
       showErrorToast(`Something went wrong! Please try again.`);
     }
   }, [setProcessing, setOutputDetails, showSuccessToast, showErrorToast]);
-  
+
 
   const handleCompile = useCallback(() => {
     console.log("handleCompile called...");
@@ -131,6 +204,10 @@ const Landing = () => {
 
   const handleStartEnd = () => {
     setRunning(!running);
+    if (!running) startTimer();
+    else clearTimer(getDeadTime());
+    // call start API with LC question in JSON (POST Request)
+    // if (!running) startSpeechRecognition();
   };
 
   useEffect(() => {
@@ -184,8 +261,14 @@ const Landing = () => {
       <div className="h-4 w-full"></div>
       <div className="flex flex-row space-x-4 items-start px-4 py-4">
         <div className="left-container flex w-1/3 flex-col h-screen">
-          <div className="h-1/2 mr-5 pt-20">
-            <div className="w-full h-full"><OutputWindow outputDetails={outputDetails} /></div>
+          <div className="h-1/2 mr-5 pt-3">
+            {/* Timer Styling */}
+            <div className="timer flex justify-center items-center mb-4">
+              {running && <div className="text-lg font-semibold text-white bg-[#1e293b] border border-gray-300 px-4 py-2 rounded shadow">
+                {timer}
+              </div>}
+            </div>
+            <div className="w-full h-full"><QuestionWindow leetcodeQuestion={running ? leetcodeQuestion : ""} /></div>
           </div>
           <div className="h-1/2 mr-5 mb-2">
             <CustomWebcam />
