@@ -24,6 +24,8 @@ const Landing = () => {
   const [theme, setTheme] = useState("cobalt");
   const [language, setLanguage] = useState(languageOptions[0]);
 
+  // const leetcodeQuestion = `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.`;
+
   const enterPress = useKeyPress("Enter");
   const ctrlPress = useKeyPress("Control");
 
@@ -67,30 +69,27 @@ const Landing = () => {
         'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
       },
     };
-
+  
     try {
       let response = await axios.request(options);
       let statusId = response.data.status?.id;
-
-      if (statusId === 1 || statusId === 2) {
-        // still processing
-        setTimeout(() => {
-          checkStatus(token);
-        }, 2000);
-        return;
-      } else {
+  
+      // Check if the response has a status indicating success
+      if (statusId === 3) { // Replace '3' with the actual success status ID
         setProcessing(false);
         setOutputDetails(response.data);
         showSuccessToast(`Compiled Successfully!`);
-        console.log("response.data", response.data);
-        return;
+      } else {
+        // If status is not 'success', show an error toast
+        setProcessing(false);
+        showErrorToast(response.data.error || `Compilation failed!`);
       }
     } catch (err) {
-      console.log("Error in checkStatus: ", err);
       setProcessing(false);
-      showErrorToast();
+      showErrorToast(`Something went wrong! Please try again.`);
     }
   }, [setProcessing, setOutputDetails, showSuccessToast, showErrorToast]);
+  
 
   const handleCompile = useCallback(() => {
     console.log("handleCompile called...");
@@ -184,25 +183,23 @@ const Landing = () => {
       />
       <div className="h-4 w-full"></div>
       <div className="flex flex-row space-x-4 items-start px-4 py-4">
-        <div className="left-container flex flex-shrink-0 w-1/3 flex-col h-screen">
-        <div className="h-1/2 mr-5 mb-2">
-        </div>
+        <div className="left-container flex w-1/3 flex-col h-screen">
+          <div className="h-1/2 mr-5 pt-20">
+            <div className="w-full h-full"><OutputWindow outputDetails={outputDetails} /></div>
+          </div>
           <div className="h-1/2 mr-5 mb-2">
             <CustomWebcam />
           </div>
         </div>
         <div className="right-container flex flex-col w-2/3 h-screen">
           <div className="flex flex-row w-full justify-end items-end px-4 py-2 mb-4 space-x-4">
-          <button
+            <button
               onClick={handleStartEnd}
-              className={classnames(
-                "border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2.5 hover:shadow transition duration-200 bg-white flex-shrink-0 mr-auto",
-                {
-                  "opacity-50" : !code,
-                  'bg-green-500 hover:bg-green-600': !running,
-                  'bg-red-500 hover:bg-red-600': running,
-                }
-              )}
+              className={
+                `text-white border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2.5 hover:shadow transition duration-200 flex-shrink-0 mr-auto ${!code ? "opacity-50" :
+                  running ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
+                }`
+              }
             >
               {running ? "Stop" : "Start"}
             </button>
@@ -219,7 +216,7 @@ const Landing = () => {
               {processing ? "Processing..." : "Compile and Execute"}
             </button>
           </div>
-          <div className="h-1/2 mr-5 mb-2">
+          <div className="h-3/5 mr-5 mb-2">
             <CodeEditorWindow
               code={code}
               onChange={onChange}
@@ -232,7 +229,7 @@ const Landing = () => {
               Output
             </h1>
           </div>
-          <div className="h-1/2 mr-5 mb-2">
+          <div className="h-2/5 mr-5 mb-2">
             <div className="w-full"><OutputWindow outputDetails={outputDetails} /></div>
             {/* <div className="w-1/3">{outputDetails && <OutputDetails outputDetails={outputDetails} />}</div> */}
           </div>
