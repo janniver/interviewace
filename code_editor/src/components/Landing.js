@@ -3,53 +3,24 @@ import CodeEditorWindow from "./CodeEditorWindow";
 import axios from "axios";
 import { classnames } from "../utils/general";
 import { languageOptions } from "../constants/languageOptions";
-
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
 import { defineTheme } from "../lib/defineTheme";
 import useKeyPress from "../hooks/useKeyPress";
 import OutputWindow from "./OutputWindow";
-import CustomInput from "./CustomInput";
-import OutputDetails from "./OutputDetails";
 import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
+import CustomWebcam from "./CustomWebcam";
 
-const javascriptDefault = `/**
-* Problem: Binary Search: Search a sorted array for a target value.
-*/
-
-// Time: O(log n)
-const binarySearch = (arr, target) => {
- return binarySearchHelper(arr, target, 0, arr.length - 1);
-};
-
-const binarySearchHelper = (arr, target, start, end) => {
- if (start > end) {
-   return false;
- }
- let mid = Math.floor((start + end) / 2);
- if (arr[mid] === target) {
-   return mid;
- }
- if (arr[mid] < target) {
-   return binarySearchHelper(arr, target, mid + 1, end);
- }
- if (arr[mid] > target) {
-   return binarySearchHelper(arr, target, start, mid - 1);
- }
-};
-
-const arr = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-const target = 5;
-console.log(binarySearch(arr, target));
-`;
+const javascriptDefault = `//Welcome to Code Editor!`;
 
 const Landing = () => {
+
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
+  const [running, setRunning] = useState(null);
   const [theme, setTheme] = useState("cobalt");
   const [language, setLanguage] = useState(languageOptions[0]);
 
@@ -72,7 +43,7 @@ const Landing = () => {
       progress: undefined,
     });
   }, []); // No dependencies, so an empty array
-  
+
   const showErrorToast = useCallback((msg, timer) => {
     toast.error(msg || `Something went wrong! Please try again.`, {
       position: "top-right",
@@ -84,7 +55,7 @@ const Landing = () => {
       progress: undefined,
     });
   }, []); // No dependencies, so an empty array
-  
+
 
   const checkStatus = useCallback(async (token) => {
     const options = {
@@ -159,6 +130,10 @@ const Landing = () => {
       });
   }, [code, customInput, language, setProcessing, checkStatus, showErrorToast]);
 
+  const handleStartEnd = () => {
+    setRunning(!running);
+  };
+
   useEffect(() => {
     if (enterPress && ctrlPress) {
       console.log("enterPress", enterPress);
@@ -208,43 +183,59 @@ const Landing = () => {
         pauseOnHover
       />
       <div className="h-4 w-full"></div>
-      <div className="flex flex-row">
-        <div className="px-4 py-2">
-          <LanguagesDropdown onSelectChange={onSelectChange} />
-        </div>
-        <div className="px-4 py-2">
-          <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
-        </div>
-      </div>
       <div className="flex flex-row space-x-4 items-start px-4 py-4">
-        <div className="flex flex-col w-full h-full justify-start items-end">
-          <CodeEditorWindow
-            code={code}
-            onChange={onChange}
-            language={language?.value}
-            theme={theme.value}
-          />
+        <div className="left-container flex flex-shrink-0 w-1/3 flex-col h-screen">
+        <div className="h-1/2 mr-5 mb-2">
         </div>
-
-        <div className="right-container flex flex-shrink-0 w-[30%] flex-col">
-          <OutputWindow outputDetails={outputDetails} />
-          <div className="flex flex-col items-end">
-            <CustomInput
-              customInput={customInput}
-              setCustomInput={setCustomInput}
-            />
+          <div className="h-1/2 mr-5 mb-2">
+            <CustomWebcam />
+          </div>
+        </div>
+        <div className="right-container flex flex-col w-2/3 h-screen">
+          <div className="flex flex-row w-full justify-end items-end px-4 py-2 mb-4 space-x-4">
+          <button
+              onClick={handleStartEnd}
+              className={classnames(
+                "border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2.5 hover:shadow transition duration-200 bg-white flex-shrink-0 mr-auto",
+                {
+                  "opacity-50" : !code,
+                  'bg-green-500 hover:bg-green-600': !running,
+                  'bg-red-500 hover:bg-red-600': running,
+                }
+              )}
+            >
+              {running ? "Stop" : "Start"}
+            </button>
+            <LanguagesDropdown onSelectChange={onSelectChange} />
+            <ThemeDropdown handleThemeChange={handleThemeChange} theme={theme} />
             <button
               onClick={handleCompile}
               disabled={!code}
               className={classnames(
-                "mt-4 border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2 hover:shadow transition duration-200 bg-white flex-shrink-0",
+                "border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-4 py-2.5 hover:shadow transition duration-200 bg-white flex-shrink-0",
                 !code ? "opacity-50" : ""
               )}
             >
               {processing ? "Processing..." : "Compile and Execute"}
             </button>
           </div>
-          {outputDetails && <OutputDetails outputDetails={outputDetails} />}
+          <div className="h-1/2 mr-5 mb-2">
+            <CodeEditorWindow
+              code={code}
+              onChange={onChange}
+              language={language?.value}
+              theme={theme.value}
+            />
+          </div>
+          <div className="flex flex-row w-full justify-start items-start px-4">
+            <h1 className="font-bold text-xl bg-clip-text text-transparent bg-gradient-to-r from-slate-900 to-slate-700 mb-2">
+              Output
+            </h1>
+          </div>
+          <div className="h-1/2 mr-5 mb-2">
+            <div className="w-full"><OutputWindow outputDetails={outputDetails} /></div>
+            {/* <div className="w-1/3">{outputDetails && <OutputDetails outputDetails={outputDetails} />}</div> */}
+          </div>
         </div>
       </div>
     </>
