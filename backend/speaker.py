@@ -27,5 +27,5 @@ class Speaker:
 
 if __name__ == "__main__":
     speaker = Speaker()
-    speaker.generateAudio("hello cuties")
+    speaker.generateAudio("ohiousy skibidi rizzlet ice spice level 10 gyatt ryan gosling sigma boss baby kai cenat W rizz what the dog doing baby gronk livy dunn am I a simp for mewing to looksmaxx or is edging goated welcome back to my channel this is markiplier L rizz")
 
