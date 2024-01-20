@@ -220,6 +220,7 @@ const Landing = () => {
 
       const data = await res.json();
       setResponse(JSON.stringify(data));
+      console.log("done w post");
       sendListenRequest();
     } catch (error) {
       console.error('Error:', error);
@@ -240,7 +241,10 @@ const Landing = () => {
       }
 
       const data = await res.json();
-      setResponse(JSON.stringify(data));
+      const jsonString = JSON.parse(JSON.stringify(data));
+      setResponse(jsonString.input);
+      console.log("response", jsonString.input, jsonString)
+      console.log("done with listen")
       sendRespondRequest();
     } catch (error) {
       console.error('Error:', error);
@@ -248,6 +252,7 @@ const Landing = () => {
   };
 
   const sendRespondRequest = async () => {
+    console.log("entered send respond")
     try {
       const res = await fetch('http://127.0.0.1:5000/respond', {
         method: 'POST',
@@ -256,6 +261,7 @@ const Landing = () => {
         },
         body: JSON.stringify({ code: code, description: response }),
       });
+      console.log("in send respond" + code, response)
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -263,6 +269,7 @@ const Landing = () => {
 
       const data = await res.json();
       setResponse(JSON.stringify(data));
+      console.log("done with respond")
       sendListenRequest();
     } catch (error) {
       console.error('Error:', error);

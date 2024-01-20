@@ -7,7 +7,7 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS 
 
 app = Flask(__name__)
-CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}})
+CORS(app)
 
 interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
 outputPath = "../../audio_files/output.mp3"
@@ -24,13 +24,9 @@ def start_script():
     reply = interviewer.chat(question)
     if speaker.speak(reply):
         print("---sent---")
-        response = jsonify({'status': '200'})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000/')
-        return response
+        return jsonify({'status': '200'})
     else:
-        response = jsonify({'status': '500'})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000/')
-        return response
+        return jsonify({'status': '500'})
 
 
 @app.route('/respond', methods=['POST'])
@@ -39,22 +35,21 @@ def respond():
     description = request.json.get('description')
 
     response = f"Code: {code} \n Description: {description}"
+    
+    print(response)
+    
     reply = interviewer.chat(response)
     if speaker.speak(reply):
-        response = jsonify({'status': '200'})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000/')
-        return response
+        return jsonify({'status': '200'})
     else:
-        response = jsonify({'status': '500'})
-        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000/')
-        return response
+        return jsonify({'status': '500'})
     
     
 @app.route('/listen', methods=['GET'])
 def listen():
     user_input = transcriber.record()
     print(user_input)
-    return jsonify({'input':user_input}).headers.add('Access-Control-Allow-Origin', 'http://localhost:3000/')
+    return jsonify({'input':user_input})
 
 
 

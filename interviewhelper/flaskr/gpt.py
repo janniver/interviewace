@@ -12,6 +12,7 @@ class GPT:
         print("Your new assistant is ready!")
 
     def chat(self, input_message):
+        print(input_message)
         self.messages.append({"role": "user", "content": input_message})
         response = openai.chat.completions.create(
             model = "gpt-3.5-turbo",
