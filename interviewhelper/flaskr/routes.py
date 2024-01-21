@@ -10,7 +10,7 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-waiting_lines = ["allow me a moment to process", "sorry, give me a minute to think", "allow me some time to think"]
+waiting_lines = ["allow me a moment to process", "give me a second to think", "allow me some time to consider"]
 
 interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
 outputPath = "../../audio_files/output.mp3"
