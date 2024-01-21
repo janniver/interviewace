@@ -95,9 +95,6 @@ const Landing = () => {
   const [running, setRunning] = useState(null);
   const [theme, setTheme] = useState("cobalt");
   const [language, setLanguage] = useState(languageOptions[0]);
-
-  // const leetcodeQuestion = `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target. You may assume that each input would have exactly one solution, and you may not use the same element twice. You can return the answer in any order.`;
-
   const enterPress = useKeyPress("Enter");
   const ctrlPress = useKeyPress("Control");
 
@@ -228,6 +225,7 @@ const Landing = () => {
   };
 
   const sendListenRequest = async () => {
+    console.log("in listen...")
     try {
       const res = await fetch('http://127.0.0.1:5000/listen', {
         method: 'GET',
@@ -245,13 +243,13 @@ const Landing = () => {
       setResponse(jsonString.input);
       console.log("response", jsonString.input, jsonString)
       console.log("done with listen")
-      sendRespondRequest();
+      sendRespondRequest(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
-  const sendRespondRequest = async () => {
+  const sendRespondRequest = async (description) => {
     console.log("entered send respond")
     try {
       const res = await fetch('http://127.0.0.1:5000/respond', {
@@ -259,9 +257,9 @@ const Landing = () => {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code: code, description: response }),
+        body: JSON.stringify({ code: code, description: description }),
       });
-      console.log("in send respond" + code, response)
+      console.log("in send respond" + code, description)
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -275,11 +273,36 @@ const Landing = () => {
       console.error('Error:', error);
     }
   };
+
+  const sendEndRequest = async () => {
+    try {
+      const res = await fetch('http://127.0.0.1:5000/end', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+      const jsonString = JSON.parse(JSON.stringify(data));
+      setResponse(jsonString.input);
+    } catch (error) {
+      console.error('Error:', error);
+    }
+  };
+
+
   const handleStartEnd = async () => {
     setRunning(!running);
-    if (!running) startTimer();
+    if (!running) {
+      startTimer();
+      sendPostRequest();
+    }
     else clearTimer(getDeadTime());
-    sendPostRequest();
   };
 
   useEffect(() => {

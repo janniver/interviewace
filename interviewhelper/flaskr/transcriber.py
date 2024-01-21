@@ -6,8 +6,6 @@ import whisper
 from dotenv import load_dotenv
 load_dotenv()
 
-audio = pyaudio.PyAudio()
-
 # Parameters
 FORMAT = pyaudio.paInt16
 CHANNELS = 1
@@ -22,6 +20,7 @@ class Transcriber:
         self.path = path
 
     def record(self):
+        audio = pyaudio.PyAudio()
         stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
 
         frames = []
