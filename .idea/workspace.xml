@@ -4,12 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09335a0e-48ae-411e-8fc0-d18f8da1093f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.env" beforeDir="false" afterPath="$PROJECT_DIR$/.env" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/audio_files/input.mp3" beforeDir="false" afterPath="$PROJECT_DIR$/audio_files/input.mp3" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/interviewhelper/flaskr/telebot.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/interviewhelper/flaskr/tempCodeRunnerFile.py" beforeDir="false" />
-    </list>
+    <list default="true" id="09335a0e-48ae-411e-8fc0-d18f8da1093f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -54,7 +49,7 @@
       <option name="presentableId" value="Default" />
       <updated>1705799021918</updated>
       <workItem from="1705799023811" duration="371000" />
-      <workItem from="1705799415431" duration="2350000" />
+      <workItem from="1705799415431" duration="3230000" />
     </task>
     <servers />
   </component>
