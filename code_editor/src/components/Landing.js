@@ -241,7 +241,7 @@ const Landing = () => {
       setResponse(jsonString.input);
       console.log("response", jsonString.input, jsonString)
       console.log("done with listen")
-      if (running) sendRespondRequest(jsonString.input);
+      if (running != null && !running) sendRespondRequest(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -266,8 +266,8 @@ const Landing = () => {
 
       const data = await res.json();
       setResponse(JSON.stringify(data));
-      console.log("done with respond")
-      if (running) sendListenRequest();
+      console.log("done with respond " + running)
+      if (running != null && !running) sendListenRequest();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -288,7 +288,7 @@ const Landing = () => {
 
       const data = await res.json();
       const jsonString = JSON.parse(JSON.stringify(data));
-      if (running) setResponse(jsonString.input);
+      if (!running) setResponse(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
