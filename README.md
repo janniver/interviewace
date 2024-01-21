@@ -1,6 +1,6 @@
 # InterviewAce: AI-Powered Technical Interview Assistant
 ## Description
-InterviewAce is an AI-driven platform tailored to optimize the technical interview experience. It is designed to revolutionize the way technical interviews are conducted. Leveraging the power of AI, our platform offers a real-time, interactive environment where candidates can showcase their coding skills and problem-solving abilities. InterviewAce is perfect for for interviewees practicing for their big day.
+As technical interviews become a mainstay in the software engineering job applications, it is crucial for interviewees to be prepared for the unique blend of problem solving and effective communication that they will encounter. InterviewAce is a platform that harnesses AI to enable this: it offers a real-time, interactive environment where candidates can practise their coding skills and communication abilities, making it the perfect tool to prepare them for the big day.
 
 ## Features
 - Live Coding Environment: Allows candidates to write, compile, execute, and showcase their coding skills in real-time. Ability to choose the language and font in the virtual IDE.
@@ -29,4 +29,3 @@ Contributions to InterviewAce are highly appreciated. For contributions, please 
 
 ## Acknowledgments
 Special thanks to the OpenAI team, the Python community, and contributors to the open-source libraries we used.
-
