@@ -34,9 +34,11 @@ def start_script():
 
 @app.route('/respond', methods=['POST'])
 def respond():
-    speaker.speak(random.choice(waiting_lines))
     code = request.json.get('code')
     description = request.json.get('description')
+    
+    if len(description) > 50:
+        speaker.speak(random.choice(waiting_lines))
 
     response = f"Code: {code} \n Description: {description}"
     
