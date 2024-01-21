@@ -87,6 +87,10 @@ const Landing = () => {
   // by the button
 
   const [code, setCode] = useState(javascriptDefault);
+  const codeRef = useRef(code);
+  useEffect(() => {
+    codeRef.current = code;
+  }, [code]);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
   const [processing, setProcessing] = useState(null);
@@ -241,7 +245,7 @@ const Landing = () => {
       setResponse(jsonString.input);
       console.log("response", jsonString.input, jsonString)
       console.log("done with listen")
-      if (running != null && !running) sendRespondRequest(jsonString.input);
+      sendRespondRequest(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -249,16 +253,18 @@ const Landing = () => {
 
   const sendRespondRequest = async (description) => {
     console.log("entered send respond")
-    console.log(code)
+    console.log("code: " + code)
     try {
+      const currentCode = codeRef.current;
+      console.log("currentCode: " + currentCode)
       const res = await fetch('http://127.0.0.1:5000/respond', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code: code, description: description }),
+        body: JSON.stringify({ code: currentCode, description: description }),
       });
-      console.log("in send respond" + code, description)
+      console.log("in send respond" + currentCode, description)
 
       if (!res.ok) {
         throw new Error(`HTTP error! status: ${res.status}`);
@@ -267,7 +273,7 @@ const Landing = () => {
       const data = await res.json();
       setResponse(JSON.stringify(data));
       console.log("done with respond " + running)
-      if (running != null && !running) sendListenRequest();
+      sendListenRequest();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -298,7 +304,7 @@ const Landing = () => {
   const handleStart = async () => {
     setRunning(true);
     startTimer();
-    sendPostRequest(); 
+    sendPostRequest();
   };
 
   const handleEnd = async () => {

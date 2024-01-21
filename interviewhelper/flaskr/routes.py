@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 import os
+import random
 from gpt import GPT
 from speaker import Speaker
 from transcriber import Transcriber
@@ -8,6 +9,8 @@ from flask_cors import CORS
 
 app = Flask(__name__)
 CORS(app)
+
+waiting_lines = ["allow me a moment to process", "sorry, give me a minute to think", "allow me some time to think"]
 
 interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
 outputPath = "../../audio_files/output.mp3"
@@ -31,6 +34,7 @@ def start_script():
 
 @app.route('/respond', methods=['POST'])
 def respond():
+    speaker.speak(random.choice(waiting_lines))
     code = request.json.get('code')
     description = request.json.get('description')
 
