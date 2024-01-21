@@ -85,9 +85,7 @@ const Landing = () => {
   // the countdown is via action event from the
   // button first we create function to be called
   // by the button
-  const onClickReset = () => {
-    clearTimer(getDeadTime());
-  };
+
   const [code, setCode] = useState(javascriptDefault);
   const [customInput, setCustomInput] = useState("");
   const [outputDetails, setOutputDetails] = useState(null);
@@ -243,7 +241,7 @@ const Landing = () => {
       setResponse(jsonString.input);
       console.log("response", jsonString.input, jsonString)
       console.log("done with listen")
-      sendRespondRequest(jsonString.input);
+      if (running) sendRespondRequest(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
@@ -251,6 +249,7 @@ const Landing = () => {
 
   const sendRespondRequest = async (description) => {
     console.log("entered send respond")
+    console.log(code)
     try {
       const res = await fetch('http://127.0.0.1:5000/respond', {
         method: 'POST',
@@ -268,7 +267,7 @@ const Landing = () => {
       const data = await res.json();
       setResponse(JSON.stringify(data));
       console.log("done with respond")
-      sendListenRequest();
+      if (running) sendListenRequest();
     } catch (error) {
       console.error('Error:', error);
     }
@@ -289,20 +288,24 @@ const Landing = () => {
 
       const data = await res.json();
       const jsonString = JSON.parse(JSON.stringify(data));
-      setResponse(jsonString.input);
+      if (running) setResponse(jsonString.input);
     } catch (error) {
       console.error('Error:', error);
     }
   };
 
 
-  const handleStartEnd = async () => {
-    setRunning(!running);
-    if (!running) {
-      startTimer();
-      sendPostRequest();
-    }
-    else clearTimer(getDeadTime());
+  const handleStart = async () => {
+    setRunning(true);
+    startTimer();
+    sendPostRequest(); 
+  };
+
+  const handleEnd = async () => {
+    setRunning(false);
+    clearTimer(getDeadTime());
+    console.log(code);
+    sendEndRequest();
   };
 
   useEffect(() => {
@@ -372,7 +375,7 @@ const Landing = () => {
         <div className="right-container flex flex-col w-2/3 h-screen">
           <div className="flex flex-row w-full justify-end items-end px-4 py-2 mb-4 space-x-4">
             <button
-              onClick={handleStartEnd}
+              onClick={running ? handleEnd : handleStart}
               className={
                 `text-white border-2 border-black z-10 rounded-md shadow-[5px_5px_0px_0px_rgba(0,0,0)] px-8 py-2.5 hover:shadow transition duration-200 flex-shrink-0 mr-auto ${!code ? "opacity-50" :
                   running ? "bg-red-500 hover:bg-red-600" : "bg-green-500 hover:bg-green-600"
