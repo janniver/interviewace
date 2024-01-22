@@ -23,4 +23,4 @@ class GPT:
 
 if __name__ == "__main__":
     gpt = GPT(os.getenv("INITIALISATION_PROMPT"))
-    print(gpt.chat("what are we doing"))
+    print(gpt.chat("what are the processes for this interview"))
