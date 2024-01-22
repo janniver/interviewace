@@ -15,7 +15,7 @@ class GPT:
         print(input_message)
         self.messages.append({"role": "user", "content": input_message})
         response = openai.chat.completions.create(
-            model = "gpt-4-1106-preview",
+            model = os.getenv("GPT_MODEL"),
             messages = self.messages)
         reply = response.choices[0].message.content
         self.messages.append({"role": "assistant", "content": reply})
