@@ -4,7 +4,6 @@ import random
 from gpt import GPT
 from speaker import Speaker
 from transcriber import Transcriber
-from flask import Flask, request, jsonify
 from flask_cors import CORS 
 
 app = Flask(__name__)
