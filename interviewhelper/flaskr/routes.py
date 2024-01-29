@@ -4,8 +4,18 @@ import random
 from gpt import GPT
 from speaker import Speaker
 from transcriber import Transcriber
-from flask_cors import CORS 
+from flask_cors import CORS, cross_origin
 
+app = Flask(__name__)
+CORS(app, support_credentials=True)
+
+@app.route("/login")
+@cross_origin(origin='*', supports_credentials=True)
+def login():
+  return jsonify({'success': 'ok'})
+
+if __name__ == "__main__":
+  app.run(host='0.0.0.0', port=8000, debug=True)
 app = Flask(__name__)
 CORS(app)
 
@@ -18,6 +28,7 @@ speaker = Speaker(outputPath)
 transcriber = Transcriber(inputPath)
 
 @app.route('/start', methods=['POST'])
+@cross_origin(origin='*', supports_credentials=True)
 def start_script():
     # main logic
     print("---recieved---")
@@ -32,6 +43,7 @@ def start_script():
 
 
 @app.route('/respond', methods=['POST'])
+@cross_origin(origin='*', supports_credentials=True)
 def respond():
     code = request.json.get('code')
     description = request.json.get('description')
@@ -51,6 +63,7 @@ def respond():
     
     
 @app.route('/listen', methods=['GET'])
+@cross_origin(origin='*', supports_credentials=True)
 def listen():
     user_input = transcriber.record()
     print(user_input)
@@ -59,6 +72,7 @@ def listen():
 
 
 @app.route('/end', methods=['GET'])
+@cross_origin(origin='*', supports_credentials=True)
 def end():
     return "hello"
 
