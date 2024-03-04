@@ -1,16 +1,31 @@
-import pyaudio
-import wave
-import audioop
 import os
 import whisper
 from dotenv import load_dotenv
+import sounddevice as sd
+import numpy as np
+import soundfile as sf
+
+# Configuration
+fs = 44100  # Sample rate in Hz
+channels = 1  # Number of audio channels
+threshold = 0.01  # Silence threshold
+silence_duration = 2  # Duration of silence to stop recording in seconds
+block_duration = 0.1  # Duration of a block in seconds
+
+# Initialize variables
+silent_blocks_needed = silence_duration / block_duration
+current_silent_blocks = 0
+recording_blocks = []
+
 load_dotenv()
 
 # Parameters
-FORMAT = pyaudio.paInt16
-CHANNELS = 1
 RATE = 44100
+CHANNELS = 1
+sd.default.samplerate = RATE
+sd.default.channels = CHANNELS
 CHUNK = 1024
+duration = 1
 THRESHOLD = int(os.getenv("SILENCE_THRESHOLD"))  # Adjust this threshold based on your environment
 SILENCE_DURATION = int(os.getenv("SILENCE_DURATION"))  # Stop recording after this duration of silence (in seconds)
 
@@ -18,54 +33,36 @@ class Transcriber:
 
     def __init__(self, path):
         self.path = path
+        self.recording_done = False
 
+    def callback(self, indata, frames, time, status):
+        global current_silent_blocks, recording_blocks
+        # Calculate RMS of the current block
+        rms = np.sqrt(np.mean(indata**2))
+        if rms < threshold:
+            current_silent_blocks += 1
+        else:
+            current_silent_blocks = 0
+        
+        recording_blocks.append(indata.copy())
+        if current_silent_blocks >= silent_blocks_needed:
+            print("Recording done...")
+            self.recording_done = True
+            
     def record(self):
-        audio = pyaudio.PyAudio()
-        stream = audio.open(format=FORMAT, channels=CHANNELS, rate=RATE, input=True, frames_per_buffer=CHUNK)
-
-        frames = []
-        silent_frames = 0
-        start_record = False
-
         try:
-            while True:
-                data = stream.read(CHUNK)
-
-                # Calculate audio level
-                rms = audioop.rms(data, 2)  # 2 corresponds to sample width in bytes
-                
-                if start_record:
-                    frames.append(data)
-
-                    # Check if the audio level is below the threshold
-                    if rms < THRESHOLD:
-                        silent_frames += 1
-                    else:
-                        silent_frames = 0
-
-                    # Check if silence has persisted for the specified duration
-                    if silent_frames >= int(RATE / CHUNK * SILENCE_DURATION):
-                        print("Silence detected. Stopping recording.")
+            with sd.InputStream(callback=self.callback, channels=channels, samplerate=fs, blocksize=int(fs * block_duration)):
+                print("Recording... Press Ctrl+C to stop manually.")
+                while True:
+                    sd.sleep(1000)
+                    if self.recording_done:
                         break
-                elif rms >= THRESHOLD:
-                    frames.append(data)
-                    start_record = True
-                    print("Recording started.")
-
         except KeyboardInterrupt:
-            print("Keyboard detected. Stopping recording.")
+            print("Manual interruption by user.")
 
-        stream.stop_stream()
-        stream.close()
-        audio.terminate()
-
-        # Saving audio data to a WAV file
-        sound_file = wave.open(self.path, "wb")
-        sound_file.setnchannels(CHANNELS)
-        sound_file.setsampwidth(audio.get_sample_size(FORMAT))
-        sound_file.setframerate(RATE)
-        sound_file.writeframes(b''.join(frames))
-        sound_file.close()
+        # Concatenate and save the recording
+        recording = np.concatenate(recording_blocks, axis=0)
+        sf.write(path, recording, fs)
         model = whisper.load_model("base")
         result = model.transcribe(self.path)
         return result["text"]
@@ -74,4 +71,6 @@ if __name__ == "__main__":
     path = "../../audio_files/input.mp3"
     trans = Transcriber(path)
     print(trans.record())
+
+
 
