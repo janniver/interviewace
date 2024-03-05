@@ -136,6 +136,9 @@ const Landing = () => {
       url: `${process.env.REACT_APP_RAPID_API_URL}/${token}`,
       params: { base64_encoded: 'true', fields: '*' },
       headers: {
+        'Access-Control-Allow-Origin': "*",
+        'Access-Control-Allow-Headers': "*",
+        'Access-Control-Allow-Methods': "*",
         'X-RapidAPI-Host': process.env.REACT_APP_RAPID_API_HOST,
         'X-RapidAPI-Key': process.env.REACT_APP_RAPID_API_KEY,
       },
@@ -180,6 +183,9 @@ const Landing = () => {
         "Content-Type": "application/json",
         "X-RapidAPI-Host": process.env.REACT_APP_RAPID_API_HOST,
         "X-RapidAPI-Key": process.env.REACT_APP_RAPID_API_KEY,
+        'Access-Control-Allow-Origin': "*",
+        'Access-Control-Allow-Headers': "*",
+        'Access-Control-Allow-Methods': "*"
       },
       data: formData,
     };
@@ -209,6 +215,9 @@ const Landing = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': "*",
+          'Access-Control-Allow-Headers': "*",
+          'Access-Control-Allow-Methods': "*"
         },
         body: JSON.stringify({ question: leetcodeQuestion }),
       });
@@ -233,6 +242,9 @@ const Landing = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': "*",
+          'Access-Control-Allow-Headers': "*",
+          'Access-Control-Allow-Methods': "*"
         },
       });
 
@@ -261,6 +273,9 @@ const Landing = () => {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': "*",
+          'Access-Control-Allow-Headers': "*",
+          'Access-Control-Allow-Methods': "*"
         },
         body: JSON.stringify({ code: currentCode, description: description }),
       });
@@ -285,6 +300,9 @@ const Landing = () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': "*",
+          'Access-Control-Allow-Headers': "*",
+          'Access-Control-Allow-Methods': "*"
         },
       });
 
