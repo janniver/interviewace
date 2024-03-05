@@ -7,7 +7,8 @@ from transcriber import Transcriber
 from flask_cors import CORS, cross_origin
 
 app = Flask(__name__)
-CORS(app, support_credentials=True)
+cors = CORS(app, support_credentials=True)
+app.config['CORS_HEADERS'] = 'Content-Type'
 
 @app.route("/login")
 @cross_origin(origin='*', supports_credentials=True)
@@ -16,8 +17,6 @@ def login():
 
 if __name__ == "__main__":
   app.run(host='0.0.0.0', port=8000, debug=True)
-app = Flask(__name__)
-CORS(app)
 
 waiting_lines = ["allow me a moment to process", "give me a second to think", "allow me some time to consider"]
 
@@ -27,7 +26,7 @@ inputPath = "../../audio_files/input.mp3"
 speaker = Speaker(outputPath)
 transcriber = Transcriber(inputPath)
 
-@app.route('/start', methods=['POST'])
+@app.route('/start', methods=['POST', 'FETCH'])
 @cross_origin(origin='*', supports_credentials=True)
 def start_script():
     # main logic
@@ -37,9 +36,9 @@ def start_script():
     reply = interviewer.chat(question)
     if speaker.speak(reply):
         print("---sent---")
-        return jsonify({'status': '200'})
+        return _build_cors_preflight_response(jsonify({'status': '200'}))
     else:
-        return jsonify({'status': '500'})
+        return _build_cors_preflight_response(jsonify({'status': '500'}))
 
 
 @app.route('/respond', methods=['POST'])
@@ -57,9 +56,9 @@ def respond():
     
     reply = interviewer.chat(response)
     if speaker.speak(reply):
-        return jsonify({'status': '200'})
+        return _build_cors_preflight_response(jsonify({'status': '200'}))
     else:
-        return jsonify({'status': '500'})
+        return _build_cors_preflight_response(jsonify({'status': '500'}))
     
     
 @app.route('/listen', methods=['GET'])
@@ -67,14 +66,18 @@ def respond():
 def listen():
     user_input = transcriber.record()
     print(user_input)
-    return jsonify({'input':user_input})
-
-
+    return _build_cors_preflight_response(jsonify({'input':user_input}))
 
 @app.route('/end', methods=['GET'])
 @cross_origin(origin='*', supports_credentials=True)
 def end():
-    return "hello"
+    return _build_cors_preflight_response("hello")
+
+def _build_cors_preflight_response(response):
+    response.headers.add("Access-Control-Allow-Origin", "*")
+    response.headers.add("Access-Control-Allow-Headers", "*")
+    response.headers.add("Access-Control-Allow-Methods", "*")
+    return response
 
 
 if __name__ == '__main__':
