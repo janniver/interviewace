@@ -113,7 +113,6 @@ pexpect==4.9.0
 pillow==10.2.0
 pipwin==0.5.2
 platformdirs==4.1.0
-playsound==1.3.0
 plotly==5.18.0
 prompt-toolkit==3.0.43
 protobuf==4.25.2
