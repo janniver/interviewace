@@ -24,7 +24,7 @@ inputPath = "../../audio_files/input.mp3"
 speaker = Speaker(outputPath)
 transcriber = Transcriber(inputPath)
 
-@app.route('/start', methods=['POST', 'FETCH', 'OPTIONS'])
+@app.route('/start')
 @cross_origin(origin='*', supports_credentials=True)
 def start_script():
     # main logic
