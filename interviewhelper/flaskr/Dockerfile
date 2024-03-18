@@ -23,4 +23,4 @@ EXPOSE 8080
 ENV NAME World
 
 # Command to run the application
-CMD ["python3", "routes.py"]
+CMD ["python3.11", "routes.py"]

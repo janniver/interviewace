@@ -62,7 +62,7 @@ class Transcriber:
 
         # Concatenate and save the recording
         recording = np.concatenate(recording_blocks, axis=0)
-        sf.write(path, recording, fs)
+        sf.write(self.path, recording, fs)
         model = whisper.load_model("base")
         result = model.transcribe(self.path)
         return result["text"]
