@@ -211,7 +211,7 @@ const Landing = () => {
 
   const sendPostRequest = async () => {
     try {
-      const res = await fetch('https://interviewace.onrender.com:8000/start', {
+      const res = await fetch('https://interviewace.onrender.com:8080/start', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ const Landing = () => {
   const sendListenRequest = async () => {
     console.log("in listen...")
     try {
-      const res = await fetch('https://interviewace.onrender.com:8000/listen', {
+      const res = await fetch('https://interviewace.onrender.com:8080/listen', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -269,7 +269,7 @@ const Landing = () => {
     try {
       const currentCode = codeRef.current;
       console.log("currentCode: " + currentCode)
-      const res = await fetch('https://interviewace.onrender.com:8000/respond', {
+      const res = await fetch('https://interviewace.onrender.com:8080/respond', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -296,7 +296,7 @@ const Landing = () => {
 
   const sendEndRequest = async () => {
     try {
-      const res = await fetch('https://interviewace.onrender.com:8000/end', {
+      const res = await fetch('https://interviewace.onrender.com:8080/end', {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
