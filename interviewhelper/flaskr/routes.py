@@ -19,8 +19,8 @@ def login():
 waiting_lines = ["allow me a moment to process", "give me a second to think", "allow me some time to consider"]
 
 interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
-outputPath = "../../audio_files/output.mp3"
-inputPath = "../../audio_files/input.mp3"
+outputPath = "output.mp3"
+inputPath = "input.mp3"
 speaker = Speaker(outputPath)
 transcriber = Transcriber(inputPath)
 
@@ -73,7 +73,7 @@ def listen():
 @app.route('/end', methods=['GET'])
 @cross_origin(origin='*', supports_credentials=True)
 def end():
-    return _build_cors_preflight_response("hello")
+    return _build_cors_preflight_response(jsonify({"hello": "world"}))
 
 def _build_cors_preflight_response(response):
     response.headers.add("Access-Control-Allow-Headers", "*")

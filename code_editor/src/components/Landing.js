@@ -13,7 +13,8 @@ import ThemeDropdown from "./ThemeDropdown";
 import LanguagesDropdown from "./LanguagesDropdown";
 import CustomWebcam from "./CustomWebcam";
 const javascriptDefault = `//Welcome to Code Editor!`;
-
+var local = true;
+const server = local ? "http://127.0.0.1:8080" : "https://interviewace.onrender.com";
 const leetcodeQuestion = `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\ 
 You may assume that each input would have exactly one solution, and you may not use the same element twice.
 You can return the answer in any order.`;
@@ -211,7 +212,7 @@ const Landing = () => {
 
   const sendPostRequest = async () => {
     try {
-      const res = await fetch('https://interviewace.onrender.com:8080/start', {
+      const res = await fetch(`${server}/start`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -238,7 +239,7 @@ const Landing = () => {
   const sendListenRequest = async () => {
     console.log("in listen...")
     try {
-      const res = await fetch('https://interviewace.onrender.com:8080/listen', {
+      const res = await fetch(`${server}/listen`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
@@ -269,7 +270,7 @@ const Landing = () => {
     try {
       const currentCode = codeRef.current;
       console.log("currentCode: " + currentCode)
-      const res = await fetch('https://interviewace.onrender.com:8080/respond', {
+      const res = await fetch(`${server}/respond`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -296,7 +297,7 @@ const Landing = () => {
 
   const sendEndRequest = async () => {
     try {
-      const res = await fetch('https://interviewace.onrender.com:8080/end', {
+      const res = await fetch(`${server}/end`, {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',

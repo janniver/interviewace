@@ -8,7 +8,7 @@ WORKDIR /app
 RUN python -m pip install --upgrade pip
 
 # Install portaudio19-dev
-RUN apt-get update && apt-get install -y portaudio19-dev git gcc python3-dev libsndfile1 && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y libasound-dev portaudio19-dev git gcc python3-dev libsndfile1 && rm -rf /var/lib/apt/lists/*
 
 # Copy the current directory contents into the container at /app
 COPY . /app
@@ -17,7 +17,7 @@ COPY . /app
 RUN pip install --no-cache-dir -r requirements.txt
 
 # Make port 80 available to the world outside this container
-EXPOSE 8080
+EXPOSE 8080/tcp
 
 # Define environment variable (optional)
 ENV NAME World

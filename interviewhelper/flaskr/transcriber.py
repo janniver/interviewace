@@ -68,7 +68,7 @@ class Transcriber:
         return result["text"]
 
 if __name__ == "__main__":
-    path = "../../audio_files/input.mp3"
+    path = "input.mp3"
     trans = Transcriber(path)
     print(trans.record())
 
