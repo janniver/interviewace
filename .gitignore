@@ -1,3 +1,4 @@
 .env
 code_editor/.env
 
+.vercel

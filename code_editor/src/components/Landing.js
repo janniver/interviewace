@@ -1,18 +1,19 @@
 import React, { useEffect, useState, useCallback, useRef } from "react";
-import CodeEditorWindow from "./CodeEditorWindow";
+import CodeEditorWindow from "./CodeEditorWindow.js";
 import axios from "axios";
-import { classnames } from "../utils/general";
-import { languageOptions } from "../constants/languageOptions";
+import { classnames } from "../utils/general.js";
+import { languageOptions } from "../constants/languageOptions.js";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { defineTheme } from "../lib/defineTheme";
-import useKeyPress from "../hooks/useKeyPress";
-import OutputWindow from "./OutputWindow";
-import QuestionWindow from "./QuestionWindow";
-import ThemeDropdown from "./ThemeDropdown";
-import LanguagesDropdown from "./LanguagesDropdown";
-import CustomWebcam from "./CustomWebcam";
+import { defineTheme } from "../lib/defineTheme.js";
+import useKeyPress from "../hooks/useKeyPress.js";
+import OutputWindow from "./OutputWindow.js";
+import QuestionWindow from "./QuestionWindow.js";
+import ThemeDropdown from "./ThemeDropdown.js";
+import LanguagesDropdown from "./LanguagesDropdown.js";
+import CustomWebcam from "./CustomWebcam.js";
 const javascriptDefault = `//Welcome to Code Editor!`;
+
 var local = true;
 const server = local ? "http://127.0.0.1:8080" : "https://interviewace.onrender.com";
 const leetcodeQuestion = `Given an array of integers nums and an integer target, return indices of the two numbers such that they add up to target.\ 
