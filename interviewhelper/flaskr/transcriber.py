@@ -1,5 +1,5 @@
-import os
 import whisper
+import globals
 from dotenv import load_dotenv
 import sounddevice as sd
 import numpy as np
@@ -26,8 +26,8 @@ sd.default.samplerate = RATE
 sd.default.channels = CHANNELS
 CHUNK = 1024
 duration = 1
-THRESHOLD = int(os.getenv("SILENCE_THRESHOLD"))  # Adjust this threshold based on your environment
-SILENCE_DURATION = int(os.getenv("SILENCE_DURATION"))  # Stop recording after this duration of silence (in seconds)
+THRESHOLD = int(globals.SILENCE_THRESHOLD)  # Adjust this threshold based on your environment
+SILENCE_DURATION = int(globals.SILENCE_DURATION)  # Stop recording after this duration of silence (in seconds)
 
 class Transcriber:
 

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify, make_response
 import os
 import random
+import globals
 from gpt import GPT
 from speaker import Speaker
 from transcriber import Transcriber
@@ -18,7 +19,7 @@ def login():
 
 waiting_lines = ["allow me a moment to process", "give me a second to think", "allow me some time to consider"]
 
-interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
+interviewer = GPT(globals.INITIALISATION_PROMPT)
 outputPath = "../../audio_files/output.mp3"
 inputPath = "../../audio_files/input.mp3"
 speaker = Speaker(outputPath)
@@ -48,21 +49,21 @@ def start_script():
 def respond():
     code = request.json.get('code')
     description = request.json.get('description')
-    
+
     if len(description) > 50:
         speaker.speak(random.choice(waiting_lines))
 
     response = f"Code: {code} \n Description: {description}"
-    
+
     print(response)
-    
+
     reply = interviewer.chat(response)
     if speaker.speak(reply):
         return _build_cors_preflight_response(jsonify({'status': '200'}))
     else:
         return _build_cors_preflight_response(jsonify({'status': '500'}))
-    
-    
+
+
 @app.route('/listen', methods=['GET'])
 @cross_origin(origin='*', supports_credentials=True)
 def listen():
