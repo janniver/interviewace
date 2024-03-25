@@ -1,4 +1,5 @@
 import os
+import globals
 from dotenv import load_dotenv
 import openai
 load_dotenv()
@@ -15,12 +16,12 @@ class GPT:
         print(input_message)
         self.messages.append({"role": "user", "content": input_message})
         response = openai.chat.completions.create(
-            model = os.getenv("GPT_MODEL"),
+            model = globals.GPT_MODEL,
             messages = self.messages)
         reply = response.choices[0].message.content
         self.messages.append({"role": "assistant", "content": reply})
         return reply
 
 if __name__ == "__main__":
-    gpt = GPT(os.getenv("INITIALISATION_PROMPT"))
+    gpt = GPT(globals.INITIALISATION_PROMPT)
     print(gpt.chat("what are the processes for this interview"))

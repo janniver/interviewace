@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, make_response
-import os
+import globals
 import random
 from gpt import GPT
 from speaker import Speaker
@@ -18,9 +18,9 @@ def login():
 
 waiting_lines = ["allow me a moment to process", "give me a second to think", "allow me some time to consider"]
 
-interviewer = GPT(os.getenv("INITIALISATION_PROMPT"))
-outputPath = "output.mp3"
-inputPath = "input.mp3"
+interviewer = GPT(globals.INITIALISATION_PROMPT)
+outputPath = "../../audio_files/output.mp3"
+inputPath = "../../audio_files/input.mp3"
 speaker = Speaker(outputPath)
 transcriber = Transcriber(inputPath)
 
