@@ -1,0 +1,133 @@
+.. index:: overview, what is Cassie
+.. _overview:
+
+********
+Overview
+********
+
+Cassie is a short and self contained library that adds support for *Promises*
+in JavaScript. It's designed to help people manage complex asynchronous
+dependencies without getting all tangled up in callback messes and loosing the
+composition power that JavaScript as a language provides. It's also designed to
+be easily extensible, such that people can provide specialised promises for
+more complex problem domains — for an example of that, see `Iris`_.
+
+
+.. index:: why use?
+.. _why_use_cassie:
+
+Why use it?
+===========
+
+JavaScript is a single-threaded, synchronous, top-down, left-right, strict
+evaluated scripting language, but environments (specially `Node.js`_) provide
+asynchronous functions to enable light-weight concurrency.
+
+As such, `Event-Driven Programming`_ and `Continuation-Passing Style`_ have
+become rather popular patterns when working in a JavaScript code-base. You ask
+the engine to do something, but instead of blocking everything until that thing
+is done, you just provide a ``Function`` that the engine should call once the
+task is done so you can continue processing the data.
+
+Unfortunately, this quickly leads to clusterfucks of callbacks, most of the
+times::
+
+    req.onreadystatechange = function(ev) {
+      if (req.readyState == 4 && /2\d{2}/.test(req.status)) {
+        var data = JSON.parse(req.responseText)
+        next() }
+
+      function next() {
+        var item = data.shift()
+        if (!item)  return
+
+        view.insert(process(item))
+        setTimeout(next, 100) }}
+
+    setTimeout(req.abort.bind(), 10e3)
+
+
+With promises, one could achieve this::
+
+    var Promise      = require('cassie').Promise
+    var sequentially = require('cassie/src/sequencing')
+
+    req.then(JSON.parse)
+       .timeout(10)
+       .ok(function(data) { sequentially.apply(null, data.map(process)) })
+
+    function process(item) { return function() {
+      var promise = Promise.make()
+      setTimeout( function() { var result = do_process(item)
+                               view.insert(result)
+                               promise.bind(result) }
+                , 100)
+      return promise }}
+
+
+At first glance it doesn't seem to have changed much, although one could (arguably) say
+that the *Promise* based example reads better. None the less, we can see some
+improvements in the *Promise* based example:
+
+  * Success and failure are properly separated, and are easily recognisable.
+
+  * Process is now a ``Function`` over single items, that can be easily
+    abstracted and combined — even though it's asynchronous.
+
+  * Using the ``sequentially`` utility, we can do *Promise* based tasks in
+    sequence, without dealing explicitly with ordering and success/failure of
+    each task individually. Tasks just need to handle themselves —
+    ``sequentially`` is just a wrapper over the lower level ``Promise#wait``
+    method, that lets you declare dependencies between promises, so you can
+    other kinds of control-flow logic.
+
+  * ``then`` allows chaining of transformations over the bound value of a
+    promise. In this case, we can separate the projection in an appropriate
+    representation from the processing of such representation — loosing
+    coupling and maximising composition of processes/function.
+
+
+Promises do even better when we have to handle complex dependencies. For
+example, if we should fire three different requests, in sequence, but only
+firing the next if the previous hasn't failed, we could simply do::
+
+    sequentially( post.bind(null, '/foo')
+                , post.bind(null, '/foo/bar')
+                , post.bind(null, '/foo/bar/baz'))
+      .ok(console.log.bind(console, 'All requests successfully processed.'))
+      .failed(console.log.bind(console, 'The following request failed:'))
+
+
+Or, if we need to apply a transformation to one of the tasks and process it
+later on::
+
+    sequentially( with_logging(post, '/foo')
+                , as_json(post.bind(null, '/foo/bar'))
+                , post.bind(null, '/foo/bar/baz'))
+    
+    function with_logging(action, uri) { return function() {
+      return action(uri).ok(console.log.bind(console, '[OK]', uri))
+                        .failed(console.log.bind(console, '[FAILED]', uri)) }}
+
+    function as_json(action) { return function() {
+      return action().then(JSON.parse) }}
+
+
+You get the idea.
+                
+
+
+Cool! How do I use it?
+======================
+
+Well, glad you asked, me dear, because we're just about to reach that part in
+particular: "How do you use *Promises*?". As we answer that question, we'll
+:doc:`dabble a little more in the concepts of Promises <getting-started>`
+through usage scenarios.
+
+
+
+.. _Iris: https://github.com/killdream/iris
+.. _Node.js: http://nodejs.org/
+.. _Event-Driven Programming: http://en.wikipedia.org/wiki/Event-driven_programming
+.. _Continuation-Passing Style: http://en.wikipedia.org/wiki/Continuation-passing_style
