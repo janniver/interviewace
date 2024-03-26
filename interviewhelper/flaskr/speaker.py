@@ -12,13 +12,12 @@ class Speaker:
     def speak(self, text):
         print(text)
 
-        response = openai.audio.speech.create(
-            model="tts-1",
-            voice="alloy",
-            input=text
-        )
-
-        response.stream_to_file(self.path)
+        with openai.audio.speech.with_streaming_response.create(
+                model="tts-1",
+                voice="alloy",
+                input=text
+        ) as response:
+            response.stream_to_file(self.path)
 
         print("---saved---")
 
@@ -32,5 +31,5 @@ class Speaker:
 if __name__ == "__main__":
     path = "../../audio_files/output.mp3"
     speaker = Speaker(path)
-    speaker.speak("hello cuties")
+    speaker.speak("hello there my name is ethan")
 
