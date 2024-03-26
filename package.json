@@ -2,6 +2,7 @@
   "dependencies": {
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
-    "openai": "^4.29.2"
+    "openai": "^4.29.2",
+    "play-sound": "^1.1.6"
   }
 }
