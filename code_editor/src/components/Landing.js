@@ -56,7 +56,6 @@ const Landing = () => {
   const clearTimer = (e) => {
     // Set the timer to 45 minutes in the format MM:SS
     setTimer("45:00");
-
     if (Ref.current) clearInterval(Ref.current);
     const id = setInterval(() => {
       startTimer(e);
@@ -78,9 +77,6 @@ const Landing = () => {
 
   // We put empty array to act as componentDid
   // mount only
-  useEffect(() => {
-    clearTimer(getDeadTime());
-  }, []);
 
   // Another way to call the clearTimer() to start
   // the countdown is via action event from the
@@ -322,6 +318,7 @@ const Landing = () => {
 
   const handleStart = async () => {
     setRunning(true);
+    clearTimer(getDeadTime());
     startTimer();
     sendPostRequest();
   };
