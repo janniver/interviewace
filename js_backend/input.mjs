@@ -18,10 +18,10 @@ class Input {
             model: "whisper-1",
         });
 
-        console.log(transcription);
+        return transcription;
     }
 }
 
 const path = "../audio_files/input.mp3";
 const input = new Input(path);
-await input.listen();
+console.log(await input.listen());
