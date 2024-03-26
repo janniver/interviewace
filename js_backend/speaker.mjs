@@ -8,23 +8,39 @@ const openai = new OpenAI({
 });
 
 class Speaker {
-    constructor(path) {
-        this.path = path;
+    constructor(filePath) {
+        this.filePath = filePath;
     }
 
     async speak(text) {
-        console.log(text);
+        console.log('To Speak: ', text);
 
         const response = await openai.audio.speech.create({
             model: "tts-1",
             voice: "alloy",
-            input: text
-        })
+            input: text,
+            responseType: 'arraybuffer'
+        });
 
-        fs.writeFileSync(this.path, response);
+        const fileStream = fs.createWriteStream(this.filePath);
+
+        response.body.pipe(fileStream);
+
+        // new Promise((resolve, reject) => {
+        //     fileStream.on('finish', () => {
+        //         resolve(filePath);
+        //     });
+        //     fileStream.on('error', (err) => {
+        //         reject(err);
+        //     });
+        // }).then((savedFilePath) => {
+        //     console.log('File saved at:', savedFilePath);
+        // }).catch((err) => {
+        //     console.error('Error:', err);
+        // });
     }
 }
 
-const path = "../../audio_files/output.mp3";
+const path = "../audio_files/output.mp3";
 const speaker = new Speaker(path);
 await speaker.speak("hello");

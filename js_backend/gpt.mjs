@@ -42,5 +42,5 @@ class GPT {
 }
 
 const gpt = new GPT("you are my personal assisstant");
-console.log(await gpt.stream_chat("write me a 500 word poem"))
+console.log(await gpt.stream_chat("write me a 100 word poem"))
 
