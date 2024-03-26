@@ -26,8 +26,21 @@ class GPT {
     return reply
   }
 
+  async stream_chat(input_message){
+    console.log(input_message);
+    this.messages.push({role: "user", content: input_message})
+    const stream = await openai.chat.completions.create({
+      messages: this.messages,
+      model: 'gpt-3.5-turbo',
+      stream: true,
+    });
+    for await (const chunk of stream) {
+      console.log(chunk.choices[0]?.delta?.content || '');
+    }
+  }
+
 }
 
 const gpt = new GPT("you are my personal assisstant");
-console.log(await gpt.chat("write me a 100 word poem"))
+console.log(await gpt.stream_chat("write me a 500 word poem"))
 
