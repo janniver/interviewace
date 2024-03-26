@@ -4,14 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="09335a0e-48ae-411e-8fc0-d18f8da1093f" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/code_editor/node_modules/.cache/.eslintcache" beforeDir="false" afterPath="$PROJECT_DIR$/code_editor/node_modules/.cache/.eslintcache" afterDir="false" />
-    </list>
+    <list default="true" id="09335a0e-48ae-411e-8fc0-d18f8da1093f" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -55,6 +59,7 @@
       <workItem from="1705799415431" duration="3230000" />
       <workItem from="1711378947720" duration="232000" />
       <workItem from="1711379399817" duration="161000" />
+      <workItem from="1711380705954" duration="842000" />
     </task>
     <servers />
   </component>
@@ -62,8 +67,10 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/interviewace$gpt.coverage" NAME="gpt Coverage Results" MODIFIED="1711378596795" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
-    <SUITE FILE_PATH="coverage/interviewace$routes.coverage" NAME="routes Coverage Results" MODIFIED="1711379473845" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
+    <SUITE FILE_PATH="coverage/interviewace$speaker.coverage" NAME="speaker Coverage Results" MODIFIED="1711381205228" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
+    <SUITE FILE_PATH="coverage/interviewace$gpt.coverage" NAME="gpt Coverage Results" MODIFIED="1711381110536" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
+    <SUITE FILE_PATH="coverage/interviewace$transcriber.coverage" NAME="transcriber Coverage Results" MODIFIED="1711381210144" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
+    <SUITE FILE_PATH="coverage/interviewace$routes.coverage" NAME="routes Coverage Results" MODIFIED="1711381236895" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
     <SUITE FILE_PATH="coverage/hackandroll$transcriber.coverage" NAME="transcriber Coverage Results" MODIFIED="1705801746792" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/interviewhelper/flaskr" />
   </component>
 </project>
