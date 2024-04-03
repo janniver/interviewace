@@ -20,8 +20,25 @@ class Input {
 
         return transcription;
     }
+
+    setup() {
+        if (navigator.mediaDevices.getUserMedia) {
+            navigator.mediaDevices
+                .getUserMedia({
+                    audio: true
+                })
+                .then(SetupStream)
+                .catch(err => {
+                    console.error(err)
+                });
+        } else {
+            console.log("Could not identify media device.");
+        }
+    }
 }
 
 const path = "../audio_files/input.mp3";
 const input = new Input(path);
 console.log(await input.listen());
+
+// input.setup();

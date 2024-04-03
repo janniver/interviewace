@@ -41,4 +41,4 @@ class Output {
 
 const path = "../audio_files/output.mp3";
 const speaker = new Output(path);
-await speaker.speak("Hello, this is a test");
+await speaker.speak("Hi, this is a test");
